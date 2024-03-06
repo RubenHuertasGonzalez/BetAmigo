@@ -1,3 +1,5 @@
+package com.institutvidreres.betamigo.ui
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,26 +33,35 @@ class InicioFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Configurar Retrofit
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.soccersapi.com/v2.2/leagues/?user=ruben.huertas&token=d5eaede04e495b041af9581af3ea2316&t=list")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        // Crear instancia de ApiService
-        apiService = retrofit.create(ApiService::class.java)
-
-        // Configurar RecyclerView
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        partidosAdapter = PartidosAdapter()
-        binding.recyclerView.adapter = partidosAdapter
+        configurarRetrofit()
+        configurarRecyclerView()
 
         // Realizar la solicitud
         obtenerPartidos()
     }
 
+    private fun configurarRetrofit() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://api.soccersapi.com/v2.2/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        // Crear instancia de ApiService
+        apiService = retrofit.create(ApiService::class.java)
+    }
+
+    private fun configurarRecyclerView() {
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        partidosAdapter = PartidosAdapter()
+        binding.recyclerView.adapter = partidosAdapter
+    }
+
     private fun obtenerPartidos() {
-        val call = apiService.obtenerPartidos()
+        val call = apiService.obtenerPartidos(
+            user = "ruben.huertas",
+            token = "d5eaede04e495b041af9581af3ea2316",
+            t = "list"
+        )
 
         call.enqueue(object : Callback<List<Partido>> {
             override fun onResponse(call: Call<List<Partido>>, response: Response<List<Partido>>) {
@@ -72,7 +83,7 @@ class InicioFragment : Fragment() {
     }
 
     private fun mostrarError(mensaje: String) {
-        // Aquí puedes implementar la lógica para mostrar el mensaje de error en la interfaz de usuario
+        // Implementar la lógica para mostrar el mensaje de error en la interfaz de usuario
         // Por ejemplo, puedes utilizar un TextView para mostrar el mensaje de error.
         // textViewError.text = mensaje
     }
