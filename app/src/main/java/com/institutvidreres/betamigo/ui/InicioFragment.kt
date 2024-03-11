@@ -1,14 +1,13 @@
-package com.institutvidreres.betamigo.ui
-
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.institutvidreres.betamigo.adapter.PartidosAdapter
+import com.institutvidreres.betamigo.adapter.ContinentesAdapter
 import com.institutvidreres.betamigo.api.ApiService
-import com.institutvidreres.betamigo.api.Partido
+import com.institutvidreres.betamigo.api.Continente
 import com.institutvidreres.betamigo.databinding.FragmentInicioBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,7 +19,7 @@ class InicioFragment : Fragment() {
 
     private lateinit var apiService: ApiService
     private lateinit var binding: FragmentInicioBinding
-    private lateinit var partidosAdapter: PartidosAdapter
+    private lateinit var continentesAdapter: ContinentesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,8 +35,8 @@ class InicioFragment : Fragment() {
         configurarRetrofit()
         configurarRecyclerView()
 
-        // Realizar la solicitud
-        obtenerPartidos()
+        // Realizar la solicitud de los continentes
+        obtenerContinentes()
     }
 
     private fun configurarRetrofit() {
@@ -52,31 +51,34 @@ class InicioFragment : Fragment() {
 
     private fun configurarRecyclerView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        partidosAdapter = PartidosAdapter()
-        binding.recyclerView.adapter = partidosAdapter
+        continentesAdapter = ContinentesAdapter() // Inicializa el adaptador de continentes
+        binding.recyclerView.adapter = continentesAdapter // Asigna el adaptador al RecyclerView
     }
 
-    private fun obtenerPartidos() {
-        val call = apiService.obtenerPartidos(
+    private fun obtenerContinentes() {
+        val call = apiService.obtenerContinentes(
             user = "ruben.huertas",
             token = "d5eaede04e495b041af9581af3ea2316",
             t = "list"
         )
 
-        call.enqueue(object : Callback<List<Partido>> {
-            override fun onResponse(call: Call<List<Partido>>, response: Response<List<Partido>>) {
+        call.enqueue(object : Callback<List<Continente>> {
+            override fun onResponse(call: Call<List<Continente>>, response: Response<List<Continente>>) {
                 if (response.isSuccessful) {
-                    val partidos = response.body()
-                    // Actualizar el adaptador con los datos recibidos
-                    partidosAdapter.actualizarPartidos(partidos)
+                    val continentes = response.body()
+                    continentes?.let {
+                        // Actualizar el adaptador con los datos recibidos
+                        continentesAdapter.actualizarContinentes(it)
+                    }
                 } else {
                     // Manejar errores de la respuesta
                     mostrarError("Error en la respuesta de la API: ${response.code()}")
                 }
             }
 
-            override fun onFailure(call: Call<List<Partido>>, t: Throwable) {
+            override fun onFailure(call: Call<List<Continente>>, t: Throwable) {
                 // Manejar errores de la solicitud
+                Log.e("InicioFragment", "Error al realizar la solicitud: ${t.message}", t)
                 mostrarError("Error al realizar la solicitud: ${t.message}")
             }
         })

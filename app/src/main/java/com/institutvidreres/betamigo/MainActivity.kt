@@ -6,7 +6,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.institutvidreres.betamigo.R
 import com.institutvidreres.betamigo.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
