@@ -6,15 +6,15 @@
     app:startDestination="@id/inicioFragment">
 
     <fragment
-        android:id="@+id/inicioFragment"
-        android:name="com.institutvidreres.betamigo.ui.InicioFragment"
-        android:label="fragment_inicio"
-        tools:layout="@layout/fragment_inicio" />
-    <fragment
         android:id="@+id/apuestasFragment"
         android:name="com.institutvidreres.betamigo.ui.ApuestasFragment"
         android:label="fragment_apuestas"
         tools:layout="@layout/fragment_apuestas" />
+    <fragment
+        android:id="@+id/inicioFragment"
+        android:name="com.institutvidreres.betamigo.ui.InicioFragment"
+        android:label="InicioFragment"
+        tools:layout="@layout/fragment_inicio"/>
     <fragment
         android:id="@+id/socialFragment"
         android:name="com.institutvidreres.betamigo.ui.SocialFragment"

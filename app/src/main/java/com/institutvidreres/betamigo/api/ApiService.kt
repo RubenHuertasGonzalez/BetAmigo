@@ -5,11 +5,10 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ApiService {
-    @GET("continents/")
-    fun obtenerContinentes(
-        @Query("user") user: String,
-        @Query("token") token: String,
-        @Query("t") t: String
-    ): Call<List<Continente>>
-
+    @GET("my/leagues")
+    fun obtenerLigas(
+        @Query("api_token") apiToken: String,
+        @Query("include") include: String
+    ): Call<Liga>
 }
+

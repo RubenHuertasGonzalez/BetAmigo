@@ -1,13 +1,13 @@
+package com.institutvidreres.betamigo.ui
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.institutvidreres.betamigo.adapter.ContinentesAdapter
 import com.institutvidreres.betamigo.api.ApiService
-import com.institutvidreres.betamigo.api.Continente
+import com.institutvidreres.betamigo.api.Liga
 import com.institutvidreres.betamigo.databinding.FragmentInicioBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,7 +19,6 @@ class InicioFragment : Fragment() {
 
     private lateinit var apiService: ApiService
     private lateinit var binding: FragmentInicioBinding
-    private lateinit var continentesAdapter: ContinentesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,15 +32,14 @@ class InicioFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         configurarRetrofit()
-        configurarRecyclerView()
 
-        // Realizar la solicitud de los continentes
-        obtenerContinentes()
+        // Realizar la solicitud de las ligas
+        obtenerLigas()
     }
 
     private fun configurarRetrofit() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.soccersapi.com/v2.2/")
+            .baseUrl("https://api.sportmonks.com/v3/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -49,44 +47,29 @@ class InicioFragment : Fragment() {
         apiService = retrofit.create(ApiService::class.java)
     }
 
-    private fun configurarRecyclerView() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        continentesAdapter = ContinentesAdapter() // Inicializa el adaptador de continentes
-        binding.recyclerView.adapter = continentesAdapter // Asigna el adaptador al RecyclerView
-    }
-
-    private fun obtenerContinentes() {
-        val call = apiService.obtenerContinentes(
-            user = "ruben.huertas",
-            token = "d5eaede04e495b041af9581af3ea2316",
-            t = "list"
+    private fun obtenerLigas() {
+        val call = apiService.obtenerLigas(
+            apiToken = "2ho6dV0ol4y42ekuPxqiux45dEtxwzusMj3xbOeudM8WyRyZU5oyCOnvNk4v",
+            include = ""
         )
 
-        call.enqueue(object : Callback<List<Continente>> {
-            override fun onResponse(call: Call<List<Continente>>, response: Response<List<Continente>>) {
+        call.enqueue(object : Callback<Liga> {
+            override fun onResponse(call: Call<Liga>, response: Response<Liga>) {
                 if (response.isSuccessful) {
-                    val continentes = response.body()
-                    continentes?.let {
-                        // Actualizar el adaptador con los datos recibidos
-                        continentesAdapter.actualizarContinentes(it)
+                    val ligas = response.body()
+                    ligas?.let {
+                        // Manejar la respuesta de la API aquí
                     }
                 } else {
                     // Manejar errores de la respuesta
-                    mostrarError("Error en la respuesta de la API: ${response.code()}")
+                    Log.e("InicioFragment", "Error en la respuesta de la API: ${response.code()}")
                 }
             }
 
-            override fun onFailure(call: Call<List<Continente>>, t: Throwable) {
+            override fun onFailure(call: Call<Liga>, t: Throwable) {
                 // Manejar errores de la solicitud
                 Log.e("InicioFragment", "Error al realizar la solicitud: ${t.message}", t)
-                mostrarError("Error al realizar la solicitud: ${t.message}")
             }
         })
-    }
-
-    private fun mostrarError(mensaje: String) {
-        // Implementar la lógica para mostrar el mensaje de error en la interfaz de usuario
-        // Por ejemplo, puedes utilizar un TextView para mostrar el mensaje de error.
-        // textViewError.text = mensaje
     }
 }

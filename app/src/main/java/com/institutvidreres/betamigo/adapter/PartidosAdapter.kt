@@ -39,9 +39,9 @@ class PartidosAdapter : RecyclerView.Adapter<PartidosAdapter.PartidoViewHolder>(
         private val resultadoTextView: TextView = itemView.findViewById(R.id.resultadoTextView)
 
         fun bind(partido: Partido) {
-            equipoLocalTextView.text = partido.equipoLocal
-            equipoVisitanteTextView.text = partido.equipoVisitante
-            resultadoTextView.text = partido.resultado
+            equipoLocalTextView.text = partido.localTeam.name
+            equipoVisitanteTextView.text = partido.visitorTeam.name
+            resultadoTextView.text = "Local: ${partido.scores.localteam_score} - Visitante: ${partido.scores.visitorteam_score}"
         }
     }
 }
